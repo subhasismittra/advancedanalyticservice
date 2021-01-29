@@ -1,0 +1,28 @@
+// Databricks notebook source
+val mounts = dbutils.fs.mounts()
+val mountPath = "/mnt/data"
+var isExist: Boolean = false
+val outer = new Breaks;
+
+outer.breakable {
+  for(mount <- mounts) {
+    if(mount.mountPoint == mountPath) {
+      isExist = true;
+      outer.break;
+    }
+  }
+}
+
+if(isExist) {
+  println("Volume Mounting for Case Study Data Already Exist!")
+}
+else {
+  dbutils.fs.mount(
+    source = "abfss://casestudydata@iomegadls.dfs.core.windows.net/",
+    mountPoint = "/mnt/data",
+    extraConfigs = configs)
+}
+
+
+// COMMAND ----------
+
